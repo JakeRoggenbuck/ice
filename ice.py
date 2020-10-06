@@ -41,6 +41,7 @@ class Ice:
             "float": self._float,
             "bool": self._bool,
             "dump": self._dump,
+            "calc": self._calc,
         }
         # Makes memory
         self.MEMORY = []
@@ -63,26 +64,45 @@ class Ice:
     def _bool(self, val):
         self.MEMORY.append(bool(val))
 
+    def _calc(self, exp):
+        if exp[1] == "+":
+            mem = exp[0] + exp[2]
+        elif exp[1] == "-":
+            mem = exp[0] - exp[2]
+        elif exp[1] == "/":
+            mem = exp[0] / exp[2]
+        elif exp[1] == "*":
+            mem = exp[0] * exp[2]
+        self.MEMORY.append(mem)
+
     def _dump(self):
         print(self.MEMORY)
 
     # Checks if value actually points to a location in memory
-    def mem_location_check(self, value):
-        if isinstance(value, list):
-            value = value[0]
-        if value[0] == "$":
-            return self.MEMORY[int(value[1:])]
+    def mem_location_check(self, *value):
+        if isinstance(value, tuple) and len(value) > 1:
+            vals = []
+            for val in value:
+                if val[0] == "$":
+                    vals.append(self.MEMORY[int(val[1:])])
+                else:
+                    vals.append(val)
+            return vals
         else:
-            return value
+            value = value[0]
+            if value[0] == "$":
+                return self.MEMORY[int(value[1:])]
+            else:
+                return value
 
     # Logic for parsing
     def logic(self, line):
         first, *value = shlex.split(line)
         if (command := self.KEYWORDS.get(first, False)):
-            if len(value) != 0:
+            if len(value) >= 1:
                 value = self.mem_location_check(*value)
                 command(value)
-            else:
+            elif len(value) == 0:
                 command()
 
 
