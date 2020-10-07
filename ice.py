@@ -81,12 +81,7 @@ class Ice:
     # Checks if value actually points to a location in memory
     def mem_location_check(self, *value):
         if isinstance(value, tuple) and len(value) > 1:
-            vals = []
-            for val in value:
-                if val[0] == "$":
-                    vals.append(self.MEMORY[int(val[1:])])
-                else:
-                    vals.append(val)
+            vals = [self.MEMORY[int(val[1:])] if val[0] == "$" else val for val in value]
             return vals
         else:
             value = value[0]
@@ -104,10 +99,3 @@ class Ice:
                 command(value)
             elif len(value) == 0:
                 command()
-
-
-# Main loop
-ice = Ice()
-with SourceFile("test.ice") as source:
-    for line in source.lines():
-        ice.logic(line)
