@@ -1,6 +1,25 @@
 # Ice
 Programming language and interpreter
 
+```
+NAME
+    ice
+
+SYNOPSIS
+    ice GROUP | COMMAND
+
+GROUPS
+    GROUP is one of the following:
+
+     ice
+
+COMMANDS
+    COMMAND is one of the following:
+
+     run
+     step
+```
+
 ```rb
 print "this"
 input "that: "
